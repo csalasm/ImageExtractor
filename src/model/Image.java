@@ -37,6 +37,11 @@ public class Image {
         return size;
     }
 
+    @Override
+    public String toString() {
+        return "Image{" + "name=" + name + ", size=" + size + ", extension=" + extension + ", idImage=" + idImage + ", idRoute=" + idRoute + '}';
+    }
+
     public void setSize(int size) {
         this.size = size;
     }

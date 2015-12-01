@@ -31,7 +31,7 @@ public class ImageDAO {
         proc.setString(1, path.getPath()); //path
         proc.setString(2, image.getName()); //name
         proc.setString(3, image.getExtension()); //extension
-        proc.setInt(3, image.getSize()); //size
+        proc.setLong(3, image.getSize()); //size
 
         proc.execute();
         int id = proc.getInt(1); //Id from the new Image or existing image
