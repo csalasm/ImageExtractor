@@ -3,17 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Clases;
+package model;
 
 /**
  *
  * @author Paloma
  */
-public class Route {
+public class Path {
     private String path;
     private int idRoute;
 
-    public Route(String path, int idRoute) {
+    public Path(String path, int idRoute) {
         this.path = path;
         this.idRoute = idRoute;
     }
