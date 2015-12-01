@@ -11,18 +11,19 @@ package model;
  */
 public class Image {
     private String name;
-    private int size;
+    private long size;
     private String extension;
     private int idImage;
     private int idRoute;
 
-    public Image(String name, int size, String extension, int idImage, int idRoute) {
+    public Image(String name, long size, String extension, int idImage, int idRoute) {
         this.name = name;
         this.size = size;
         this.extension = extension;
         this.idImage = idImage;
         this.idRoute = idRoute;
     }
+    
 
     public String getName() {
         return name;
@@ -32,7 +33,7 @@ public class Image {
         this.name = name;
     }
 
-    public int getSize() {
+    public long getSize() {
         return size;
     }
 

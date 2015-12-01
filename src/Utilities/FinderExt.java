@@ -86,6 +86,21 @@ public class FinderExt {
         }
         return false;
     }
+    public String returnExt(File f){
+        String extension = null;
+        String name=f.getName();
+        int i= name.lastIndexOf('.');
+        if(i>0){
+            extension=name.substring(i+1);
+        }
+        return extension.toLowerCase();
+    }
+    public String returnName(File f){
+        String name=null;
+        name=f.getName();
+        int i = name.lastIndexOf('.');
+        return name.substring(0, i-1);
+    }
     public static void main(String[] args) {
         FinderExt find = new FinderExt();
         find.readDirectory();

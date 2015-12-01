@@ -9,6 +9,7 @@ import Utilities.FinderExt;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import model.Image;
 
 /**
  *
@@ -37,6 +38,7 @@ public class SearchControlator {
 
                 } else if (s[i].isFile()) {
                     if (finde.isImage(s[i])) {
+                        Image image=new Image(finde.returnName(dir),s[i].length(),finde.returnExt(dir),0,0);
                     }
                 }
             }
