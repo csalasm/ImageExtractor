@@ -3,28 +3,28 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Clases;
+package model;
 
 /**
  *
  * @author Paloma
  */
 public class Label {
-    private String name;
+    private String value;
     private int idLabel;
 
-    public Label(String nombre, int idLabel) {
-        this.name = name;
+    public Label(String value, int idLabel) {
+        this.value = value;
         this.idLabel = idLabel;
     }
 
-    public String getName() {
-        return name;
+    
+    
+    public String getValue() {
+        return value;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+   
 
     public int getIdLabel() {
         return idLabel;
