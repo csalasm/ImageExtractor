@@ -9,44 +9,63 @@ import DAOModel.ImageDAO;
 import DAOModel.LabelDAO;
 import Utilities.ExtensionFinder;
 import Utilities.MetadataFinder;
-import Utilities.Util;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Tag;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Image;
 import model.Image_label;
 import model.Label;
 import model.Path;
-import org.apache.commons.collections4.IteratorUtils;
+import view.MainView;
+
 
 /**
  *
  * @author andresbailen93
  */
-public class SearchControlator {
+public class SearchControlator implements ActionListener {
 
     private ExtensionFinder finde;
+    private MainView mainView;
 
-    public SearchControlator() throws IOException {
+    public SearchControlator() {
+      mainView = new MainView();
+      mainView.btnIndex.setActionCommand("BTN_INDEX");
+      mainView.btnIndex.addActionListener(this);
+      mainView.setVisible(true);
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+       try { 
+           switch (e.getActionCommand()) {
+                case "BTN_INDEX":
+                startSearching();
+           }
+       } catch (IOException ex) {
+           ex.printStackTrace();
+       }
+    }
+    
+    private void startSearching() throws IOException {
         finde = new ExtensionFinder();
         ArrayList<String> directories = finde.readDirectory();
         for (String dir : directories) {
             File f = new File(dir);
             directory(f);
         }
-
     }
 
     public void directory(File dir) throws IOException {
+        StringBuilder output = new StringBuilder();
         if (dir != null) {
             if (dir.isDirectory()) {
                 File s[] = dir.listFiles();
@@ -56,7 +75,7 @@ public class SearchControlator {
 
                     } else if (s[i].isFile()) {
                         if (finde.isImage(s[i])) {
-                            //System.out.println(s[i]);
+                            output.append(s[i].getName()).append("\n");
                             int imageid=0;
                             Image image = new Image(finde.returnName(s[i]), s[i].length(), finde.returnExt(s[i]), 0, 0);
                             Path path= new Path(finde.returnPath(s[i]),0);
@@ -74,8 +93,9 @@ public class SearchControlator {
                                 ArrayList<Directory> listDir = mf.getDirectory();
                                 ArrayList<Tag> tagList;
                                 LabelDAO labelDAO = new LabelDAO();
+                                
                                 for(Directory d: listDir) {
-                                    System.out.println(d);
+                                    output.append(d).append("\n");
                                     model.Directory md = new model.Directory(0, d.getName());
                                     tagList = mf.getLabel(d);
                                     for (Tag t: tagList) {
@@ -85,10 +105,7 @@ public class SearchControlator {
                                     }
                                     
                                 }
-                                
-                                
-                                
-                                //System.out.println(image); 
+                                mainView.jAreaConsole.setText(output.toString());
                             } catch (ImageProcessingException ex) {
                                 Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
                             
