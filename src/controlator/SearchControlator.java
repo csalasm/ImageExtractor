@@ -9,7 +9,6 @@ import DAOModel.ImageDAO;
 import DAOModel.LabelDAO;
 import Utilities.ExtensionFinder;
 import Utilities.MetadataFinder;
-import Utilities.Util;
 import com.drew.imaging.ImageProcessingException;
 import com.drew.metadata.Directory;
 import com.drew.metadata.Tag;
