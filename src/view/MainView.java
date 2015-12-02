@@ -5,6 +5,8 @@
  */
 package view;
 
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author csalas
@@ -16,6 +18,16 @@ public class MainView extends javax.swing.JFrame {
      */
     public MainView() {
         initComponents();
+        this.setSize(640, 480);
+        this.setTitle("ImageExtractor");
+        manageImageTable();
+    }
+    
+    private void manageImageTable() {
+        Object columns[] = {"ID", "NOMBRE", "TAMAÑO", "EXTENSIÓN", "RUTA"};
+        DefaultTableModel model = new DefaultTableModel(columns, 0);
+        jTableImage.setModel(model);
+        
     }
 
     /**
@@ -27,17 +39,124 @@ public class MainView extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        btnIndex = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jAreaConsole = new javax.swing.JTextArea();
+        jTabbedPanel = new javax.swing.JTabbedPane();
+        jPanelImage = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTableImage = new javax.swing.JTable();
+        jTextSearchImage = new javax.swing.JTextField();
+        jLabel1 = new javax.swing.JLabel();
+        jRadioImageNombre = new javax.swing.JRadioButton();
+        jRadioImageExtension = new javax.swing.JRadioButton();
+        jRadioImageRuta = new javax.swing.JRadioButton();
+        jPanelMetaData = new javax.swing.JPanel();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        btnIndex.setText("Indexar");
+
+        jAreaConsole.setEditable(false);
+        jAreaConsole.setColumns(20);
+        jAreaConsole.setRows(5);
+        jScrollPane1.setViewportView(jAreaConsole);
+
+        jTableImage.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(jTableImage);
+
+        jLabel1.setText("Filtrar:");
+
+        buttonGroup1.add(jRadioImageNombre);
+        jRadioImageNombre.setSelected(true);
+        jRadioImageNombre.setText("Nombre");
+
+        buttonGroup1.add(jRadioImageExtension);
+        jRadioImageExtension.setText("Extensión");
+
+        buttonGroup1.add(jRadioImageRuta);
+        jRadioImageRuta.setText("Ruta");
+
+        javax.swing.GroupLayout jPanelImageLayout = new javax.swing.GroupLayout(jPanelImage);
+        jPanelImage.setLayout(jPanelImageLayout);
+        jPanelImageLayout.setHorizontalGroup(
+            jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelImageLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jRadioImageNombre)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioImageExtension)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioImageRuta)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextSearchImage, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+        );
+        jPanelImageLayout.setVerticalGroup(
+            jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelImageLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanelImageLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextSearchImage, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1)
+                    .addComponent(jRadioImageNombre)
+                    .addComponent(jRadioImageExtension)
+                    .addComponent(jRadioImageRuta))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53))
+        );
+
+        jTabbedPanel.addTab("Imagen", jPanelImage);
+
+        javax.swing.GroupLayout jPanelMetaDataLayout = new javax.swing.GroupLayout(jPanelMetaData);
+        jPanelMetaData.setLayout(jPanelMetaDataLayout);
+        jPanelMetaDataLayout.setHorizontalGroup(
+            jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 619, Short.MAX_VALUE)
+        );
+        jPanelMetaDataLayout.setVerticalGroup(
+            jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 303, Short.MAX_VALUE)
+        );
+
+        jTabbedPanel.addTab("Metadatos", jPanelMetaData);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnIndex))
+                    .addComponent(jTabbedPanel)
+                    .addComponent(jScrollPane1))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnIndex)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                .addComponent(jTabbedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
         );
 
         pack();
@@ -45,5 +164,19 @@ public class MainView extends javax.swing.JFrame {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton btnIndex;
+    private javax.swing.ButtonGroup buttonGroup1;
+    public javax.swing.JTextArea jAreaConsole;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanelImage;
+    private javax.swing.JPanel jPanelMetaData;
+    private javax.swing.JRadioButton jRadioImageExtension;
+    private javax.swing.JRadioButton jRadioImageNombre;
+    private javax.swing.JRadioButton jRadioImageRuta;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTabbedPane jTabbedPanel;
+    private javax.swing.JTable jTableImage;
+    private javax.swing.JTextField jTextSearchImage;
     // End of variables declaration//GEN-END:variables
 }

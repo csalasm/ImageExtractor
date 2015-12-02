@@ -5,6 +5,8 @@
  */
 package imageextractor;
 
+import controlator.MainControlator;
+
 /**
  *
  * @author csalas
@@ -15,7 +17,7 @@ public class ImageExtractor {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
+        MainControlator ctrl = new MainControlator();
     }
     
 }
