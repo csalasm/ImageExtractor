@@ -27,11 +27,11 @@ import javax.imageio.ImageIO;
  *
  * @author andresbailen93
  */
-public class FinderExt {
+public class ExtensionFinder {
 
     String directory = "";
 
-    public FinderExt() {
+    public ExtensionFinder() {
     }
 
     public String getDirectory() {
@@ -49,12 +49,12 @@ public class FinderExt {
         try {
             route = new FileInputStream("./route.properties");
         } catch (FileNotFoundException ex) {
-            Logger.getLogger(FinderExt.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExtensionFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
         try {
             pr1.load(route);
         } catch (IOException ex) {
-            Logger.getLogger(FinderExt.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ExtensionFinder.class.getName()).log(Level.SEVERE, null, ex);
         }
         Set<String> prNames = new HashSet<>();
         prNames = pr1.stringPropertyNames();

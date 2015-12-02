@@ -12,13 +12,23 @@ package model;
 public class Label {
     private String value;
     private int idLabel;
+    private int idDirectory;
 
-    public Label(String value, int idLabel) {
+    public Label(String value, int idLabel, int idDirectory) {
         this.value = value;
         this.idLabel = idLabel;
+        this.idDirectory = idDirectory;
     }
 
-    
+    public int getIdDirectory() {
+        return idDirectory;
+    }
+
+    public void setIdDirectory(int idDirectory) {
+        this.idDirectory = idDirectory;
+    }
+
+   
     
     public String getValue() {
         return value;
