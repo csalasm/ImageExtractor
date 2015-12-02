@@ -5,6 +5,7 @@
  */
 package Utilities;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,6 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.activation.MimetypesFileTypeMap;
+import javax.imageio.ImageIO;
 
 /**
  *
@@ -66,13 +68,20 @@ public class FinderExt {
     }
 
 
-    public boolean isImage(File f){
-       String mimetype = new MimetypesFileTypeMap().getContentType(f);
-       String type=mimetype.split("/")[0];
-       if(type.equals("image")){
-           return true;
-       }
-        return false;
+    public boolean isImage(File f) throws IOException{
+        
+            /* String mimetype = new MimetypesFileTypeMap().getContentType(f);
+            String type=mimetype.split("/")[0];
+            System.out.println(type);
+            System.out.println(f.getName());
+            if(type.equals("image")){
+            return true;
+            }
+            return false;*/
+            BufferedImage Image = ImageIO.read(f);
+        return Image != null;
+            
+
     }
     
     public String returnExt(File f){
@@ -88,10 +97,14 @@ public class FinderExt {
         String name=null;
         name=f.getName();
         int i = name.lastIndexOf('.');
-    
-        return name.substring(0, i-1);
-
         
+        return name.substring(0, i);
+    }
+    public String returnPath(File f){
+        String path=null;
+        path=f.toString();
+        int i= path.lastIndexOf('/');
+        return path.substring(0, i+1);
     }
 
 

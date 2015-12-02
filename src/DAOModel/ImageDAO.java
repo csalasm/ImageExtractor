@@ -28,10 +28,10 @@ public class ImageDAO {
         
         proc = con.prepareCall("{? = call INSERTIMAGE(?,?,?,?)}");
         proc.registerOutParameter(1, java.sql.Types.INTEGER);
-        proc.setString(1, path.getPath()); //path
-        proc.setString(2, image.getName()); //name
-        proc.setString(3, image.getExtension()); //extension
-        proc.setLong(3, image.getSize()); //size
+        proc.setString(2, path.getPath()); //path
+        proc.setString(3, image.getName()); //name
+        proc.setString(4, image.getExtension()); //extension
+        proc.setLong(5, image.getSize()); //size
 
         proc.execute();
         int id = proc.getInt(1); //Id from the new Image or existing image

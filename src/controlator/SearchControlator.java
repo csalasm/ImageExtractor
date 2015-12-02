@@ -5,13 +5,18 @@
  */
 package controlator;
 
+import DAOModel.ImageDAO;
 import Utilities.FinderExt;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Image;
+import model.Path;
 
 /**
  *
@@ -42,8 +47,15 @@ public class SearchControlator {
                     } else if (s[i].isFile()) {
                         if (finde.isImage(s[i])) {
                             System.out.println(s[i]);
-                            //Image image = new Image(finde.returnName(dir), s[i].length(), finde.returnExt(dir), 0, 0);
-                           // System.out.println(image); 
+                            Image image = new Image(finde.returnName(s[i]), s[i].length(), finde.returnExt(s[i]), 0, 0);
+                            Path path= new Path(finde.returnPath(s[i]),0);
+                            ImageDAO imagedao=new ImageDAO();
+                            try {
+                                imagedao.addImage(image, path);
+                            } catch (SQLException ex) {
+                                Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            System.out.println(image); 
                         }
                     }
                 }
