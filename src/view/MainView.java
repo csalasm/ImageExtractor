@@ -5,6 +5,9 @@
  */
 package view;
 
+import java.util.Enumeration;
+import javax.swing.AbstractButton;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -12,7 +15,8 @@ import javax.swing.table.DefaultTableModel;
  * @author csalas
  */
 public class MainView extends javax.swing.JFrame {
-
+    
+    public DefaultTableModel model;
     /**
      * Creates new form MainView
      */
@@ -25,9 +29,21 @@ public class MainView extends javax.swing.JFrame {
     
     private void manageImageTable() {
         Object columns[] = {"ID", "NOMBRE", "TAMAÑO", "EXTENSIÓN", "RUTA"};
-        DefaultTableModel model = new DefaultTableModel(columns, 0);
+        model = new DefaultTableModel(columns, 0);
         jTableImage.setModel(model);
+        jTableImage.setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
         
+    }
+    
+    public String getImageFilterSelected() {
+        String opt = null;
+        for (Enumeration<AbstractButton> buttons = buttonGroup1.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
+            if (button.isSelected()) {
+                opt = button.getActionCommand();
+            }
+        }
+        return opt;
     }
 
     /**
@@ -53,6 +69,11 @@ public class MainView extends javax.swing.JFrame {
         jRadioImageExtension = new javax.swing.JRadioButton();
         jRadioImageRuta = new javax.swing.JRadioButton();
         jPanelMetaData = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        jComboDirectorio = new javax.swing.JComboBox();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jTableLabels = new javax.swing.JTable();
+        btnShow = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -78,12 +99,15 @@ public class MainView extends javax.swing.JFrame {
         buttonGroup1.add(jRadioImageNombre);
         jRadioImageNombre.setSelected(true);
         jRadioImageNombre.setText("Nombre");
+        jRadioImageNombre.setActionCommand("name");
 
         buttonGroup1.add(jRadioImageExtension);
         jRadioImageExtension.setText("Extensión");
+        jRadioImageExtension.setActionCommand("ext");
 
         buttonGroup1.add(jRadioImageRuta);
         jRadioImageRuta.setText("Ruta");
+        jRadioImageRuta.setActionCommand("path");
 
         javax.swing.GroupLayout jPanelImageLayout = new javax.swing.GroupLayout(jPanelImage);
         jPanelImage.setLayout(jPanelImageLayout);
@@ -96,7 +120,7 @@ public class MainView extends javax.swing.JFrame {
                 .addComponent(jRadioImageExtension)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioImageRuta)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 142, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextSearchImage, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -120,18 +144,51 @@ public class MainView extends javax.swing.JFrame {
 
         jTabbedPanel.addTab("Imagen", jPanelImage);
 
+        jLabel2.setText("Directorio:");
+
+        jTableLabels.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane3.setViewportView(jTableLabels);
+
         javax.swing.GroupLayout jPanelMetaDataLayout = new javax.swing.GroupLayout(jPanelMetaData);
         jPanelMetaData.setLayout(jPanelMetaDataLayout);
         jPanelMetaDataLayout.setHorizontalGroup(
             jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 619, Short.MAX_VALUE)
+            .addGroup(jPanelMetaDataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 607, Short.MAX_VALUE)
+                    .addGroup(jPanelMetaDataLayout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboDirectorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
         );
         jPanelMetaDataLayout.setVerticalGroup(
             jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 303, Short.MAX_VALUE)
+            .addGroup(jPanelMetaDataLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelMetaDataLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jComboDirectorio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPanel.addTab("Metadatos", jPanelMetaData);
+
+        btnShow.setText("Recuperar");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -142,6 +199,8 @@ public class MainView extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnShow)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnIndex))
                     .addComponent(jTabbedPanel)
                     .addComponent(jScrollPane1))
@@ -151,7 +210,9 @@ public class MainView extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnIndex)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnIndex)
+                    .addComponent(btnShow))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(jTabbedPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 349, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -165,18 +226,23 @@ public class MainView extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton btnIndex;
+    public javax.swing.JButton btnShow;
     private javax.swing.ButtonGroup buttonGroup1;
     public javax.swing.JTextArea jAreaConsole;
+    public javax.swing.JComboBox jComboDirectorio;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanelImage;
+    private javax.swing.JLabel jLabel2;
+    public javax.swing.JPanel jPanelImage;
     private javax.swing.JPanel jPanelMetaData;
     private javax.swing.JRadioButton jRadioImageExtension;
     private javax.swing.JRadioButton jRadioImageNombre;
     private javax.swing.JRadioButton jRadioImageRuta;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPanel;
-    private javax.swing.JTable jTableImage;
-    private javax.swing.JTextField jTextSearchImage;
+    public javax.swing.JTable jTableImage;
+    public javax.swing.JTable jTableLabels;
+    public javax.swing.JTextField jTextSearchImage;
     // End of variables declaration//GEN-END:variables
 }
