@@ -12,18 +12,26 @@ import model.Image;
 import model.Path;
 
 /**
- *
+ * Clase que utiliza la funcion INSERTIMAGE de oracle para las inserciones
  * @author csalas
  */
 public class ImageDAO {
 
     private Connection con = null;
     CallableStatement proc = null;
-
+/**
+ * Constructor de la clase ImagenDAO
+ */
     public ImageDAO() {
         con = ConexionOrcl.connect();
     }
-
+/**
+ * Funcion que invoca la funcion que inserta una imagen en la base de datos relacional
+ * @param image Objeto de la clase Image
+ * @param path Objeto de la clase Path
+ * @return Devuelve el entero identificador de la imagen
+ * @throws SQLException 
+ */
     public int addImage(Image image, Path path) throws SQLException {
         
         proc = con.prepareCall("{? = call INSERTIMAGE(?,?,?,?)}");
