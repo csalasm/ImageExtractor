@@ -73,6 +73,7 @@ public class MigrationDAO {
                     else {
                         MigrationDirectory mdobj = new MigrationDirectory(nameDirectory, vl_list);
                         md_list.add(mdobj);
+                        vl_list = new ArrayList<>();
                         nameDirectory = rs3.getString("name");
                     }    
                 }

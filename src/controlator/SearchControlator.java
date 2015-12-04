@@ -15,8 +15,11 @@ import com.drew.metadata.Directory;
 import com.drew.metadata.Tag;
 import com.mongodb.MongoWriteException;
 import Connections.ConexionMongoDB;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.File;
@@ -35,6 +38,7 @@ import model.Label;
 import model.Migration;
 import model.MigrationDirectory;
 import model.Path;
+import model.Value_Label;
 import view.MainView;
 
 
@@ -42,11 +46,12 @@ import view.MainView;
  *
  * @author andresbailen93
  */
-public class SearchControlator implements ActionListener, KeyListener, ListSelectionListener {
+public class SearchControlator implements ActionListener, KeyListener, ListSelectionListener, ItemListener {
 
     private ExtensionFinder finde;
     private MainView mainView;
     ConexionMongoDB mongoDB = null;
+    private ArrayList<MigrationDirectory> listDirectories;
 
     public SearchControlator() {
       mainView = new MainView();
@@ -54,8 +59,49 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
       mainView.btnIndex.addActionListener(this);
       mainView.btnShow.setActionCommand("SHOW");
       mainView.btnShow.addActionListener(this);
-      mainView.jTextSearchImage.addKeyListener(this);
+      mainView.jTextSearchImage.addKeyListener(new KeyListener() {
+          @Override
+          public void keyTyped(KeyEvent e) {
+             
+          }
+
+          @Override
+          public void keyPressed(KeyEvent e) {
+           
+          }
+
+          @Override
+          public void keyReleased(KeyEvent e) {
+            initMongoDB();
+            getAllImages(mongoDB.getImagesFilterBy(mainView.getImageFilterSelected(), mainView.jTextSearchImage.getText()));
+          }
+      });
+      mainView.jTextSearchLabel.addKeyListener(new KeyListener() {
+
+          @Override
+          public void keyTyped(KeyEvent e) {
+             
+          }
+
+          @Override
+          public void keyPressed(KeyEvent e) {
+              
+          }
+
+          @Override
+          public void keyReleased(KeyEvent e) {
+             initMongoDB();
+             int id = (int)mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 0);
+              updateMetaDataGUI(mongoDB.getLabelsFilterBy(id, 
+                      mainView.jComboDirectorio.getSelectedItem().toString(),
+                      mainView.getMetadataFilterSelected(),
+                      mainView.jTextSearchLabel.getText()));
+          }
+      });
       mainView.jTableImage.getSelectionModel().addListSelectionListener(this);
+      mainView.jComboDirectorio.addItemListener(this);
+      mainView.jComboDirectorio.setActionCommand("DIRECTORY_SELECT");
+      mainView.pack();
       mainView.setVisible(true);
     }
     
@@ -68,6 +114,9 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
                     break;
                 case "SHOW":
                     getAllImages(null);
+                    break;
+                case "DIRECTORY_SELECT":
+                    updateMetaDataGUI(null);
                     break;
                             
            }
@@ -101,20 +150,20 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
         else
             mList = migrationList;
         
-        mainView.model.setRowCount(0);
+        mainView.modelImage.setRowCount(0);
         for (Migration m: mList) {
             Object[] row ={m.getId(),m.getName(),m.getSize(),m.getExtension(),m.getPath()};
-            mainView.model.addRow(row);
+            mainView.modelImage.addRow(row);
         }
         mainView.jTableImage.setEnabled(true);
         mainView.jTableImage.setRowSelectionAllowed(true);
+        
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment( JLabel.CENTER );
         for(int i=0;i<mainView.jTableImage.getColumnCount();i++)
             mainView.jTableImage.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
         
         
-        generateMetadataGUI();
     }
     
     private void generateMigrationData() {
@@ -130,12 +179,62 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
         }          
     }
     
-    private void generateMetadataGUI() {
-        ArrayList<MigrationDirectory> listDirectories = mongoDB.getDirectoriesFromImageID(6);
+    private void generateMetadataGUI(int idImage) {
+        listDirectories = mongoDB.getDirectoriesFromImageID(idImage);
         mainView.jComboDirectorio.removeAllItems();
         for (MigrationDirectory md: listDirectories) {
             mainView.jComboDirectorio.addItem(md.getName());
         }
+        
+        mainView.modelMetaData.setRowCount(0);
+        for (Value_Label vl: listDirectories.get(0).getLabels()) {
+            Object[] row ={vl.getLabel(), vl.getValue()};
+            mainView.modelMetaData.addRow(row);
+        }
+        mainView.jTableLabels.setEnabled(true);
+        mainView.jTableLabels.setRowSelectionAllowed(true);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        for(int i=0;i<mainView.jTableLabels.getColumnCount();i++)
+            mainView.jTableLabels.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+        
+    }
+    
+    private void updateMetaDataGUI(ArrayList<Value_Label> lList) {
+        String dirSelected = null;
+        ArrayList<Value_Label> labelsList = null;
+ 
+        mainView.modelMetaData.setRowCount(0);
+        if (mainView.jComboDirectorio != null) {
+            dirSelected = mainView.jComboDirectorio.getSelectedItem().toString();
+        }
+        if (lList == null)
+            labelsList = getLabels(dirSelected);
+        else
+            labelsList = lList;
+        
+        for (Value_Label vl: labelsList) {
+            Object[] row ={vl.getLabel(), vl.getValue()};
+            mainView.modelMetaData.addRow(row);
+        }
+       
+        mainView.jTableLabels.setEnabled(true);
+        mainView.jTableLabels.setRowSelectionAllowed(true);
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        for(int i=0;i<mainView.jTableLabels.getColumnCount();i++)
+            mainView.jTableLabels.getColumnModel().getColumn(i).setCellRenderer( centerRenderer ); 
+                
+    }
+    
+    private ArrayList<Value_Label> getLabels(String dirSelected) {
+        for (MigrationDirectory md: listDirectories) {
+            if (md.getName().equals(dirSelected)) {
+                return md.getLabels();
+            }
+                
+        }
+        return null;
     }
 
     public void directory(File dir) throws IOException {
@@ -208,15 +307,24 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
 
     @Override
     public void keyReleased(KeyEvent e) {
-        initMongoDB();
-        getAllImages(mongoDB.getImagesFilterBy(mainView.getImageFilterSelected(), mainView.jTextSearchImage.getText()));
+        
 
         
     }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
-        if (mainView.jTableImage.getSelectedRow() > -1)
-            System.out.println(mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 0));
+        if (mainView.jTableImage.getSelectedRow() > -1) {
+            generateMetadataGUI((int)mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 0));
+            mainView.etImageName.setText((String)mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 1));
+            mainView.pack();
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            updateMetaDataGUI(null);
+        }
     }
 }

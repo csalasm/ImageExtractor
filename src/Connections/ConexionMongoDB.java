@@ -14,10 +14,14 @@
  
  import org.bson.Document;
  import com.mongodb.Block;
+import com.mongodb.client.AggregateIterable;
  import com.mongodb.client.FindIterable;
 import com.mongodb.client.model.Filters;
 import java.util.ArrayList;
+import static java.util.Arrays.asList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import model.Migration;
 import model.MigrationDirectory;
 import model.Value_Label;
@@ -82,10 +86,11 @@ import model.Value_Label;
         directoriesList = new ArrayList<>();
 
         for(MigrationDirectory md: m.getDirectoryName()) {
-     
+            //System.out.println(md.getName());
             // Generamos el array de Documentos de Etiquetas
             labelsList = new ArrayList<>();
             for (Value_Label vl: md.getLabels()) {
+                //System.out.println(vl);
                 docLabel = new Document();
                 docLabel.append("labelName", vl.getLabel())
                         .append("value", vl.getValue());
@@ -156,7 +161,16 @@ import model.Value_Label;
             public void apply(final Document document) {
                List<Document> documents = (List<Document>) document.get("directory");
                for (Document d: documents) {
-                   MigrationDirectory md = new MigrationDirectory(d.getString("directoryName"), null);
+                   // Recuperamos las etiquetas
+                   //System.out.println(d.get("directoryName"));
+                   List<Document> etDocuments = (List<Document>) d.get("labels");
+                   ArrayList<Value_Label> valueLabelList = new ArrayList<>();
+                   for (Document dEt: etDocuments) {
+                       Value_Label vl = new Value_Label(dEt.getString("value"), dEt.getString("labelName"));
+                       //System.out.println(vl);
+                       valueLabelList.add(vl);
+                   }
+                   MigrationDirectory md = new MigrationDirectory(d.getString("directoryName"), valueLabelList);
                    rMigrationDirectoryList.add(md);
                }
                    
@@ -164,6 +178,35 @@ import model.Value_Label;
         });
          
          return rMigrationDirectoryList;
+     }
+     
+     public ArrayList<Value_Label> getLabelsFilterBy(int idImage, String directoryName, String filterName, String filterValue) {
+         ArrayList<Value_Label> labelList = new ArrayList<>();
+            AggregateIterable iterable = db.getCollection(dbName).aggregate(asList(
+                    new Document("$match", new Document("_id", idImage)),
+                    new Document("$unwind", "$directory"), 
+                    new Document("$unwind", "$directory.labels")));
+
+        iterable.forEach(new Block<Document>() {
+            @Override
+            public void apply(final Document document) {
+                Document d = (Document)document.get("directory");
+                if (d.getString("directoryName").equals(directoryName)) {
+                    Document l = (Document)d.get("labels");
+                    Pattern p = Pattern.compile(".*"+filterValue+".*", Pattern.CASE_INSENSITIVE);
+                    Matcher matcher = p.matcher(l.getString(filterName));
+                    Value_Label vl;
+                    if (matcher.matches()) {
+                        if (filterName.equals("labelName"))
+                            vl = new Value_Label(l.getString("value"), l.getString(filterName));
+                        else
+                            vl = new Value_Label(l.getString(filterName), l.getString("labelName"));
+                        labelList.add(vl);
+                    }
+                }
+            }
+        });
+         return labelList;
      }
   
 }
