@@ -136,13 +136,27 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
     }
 
     private void startSearching() throws IOException {
-        finde = new ExtensionFinder();
-        ArrayList<String> directories = finde.readDirectory();
-        for (String dir : directories) {
-            File f = new File(dir);
-            directory(f);
-        }
-        generateMigrationData();
+        mainView.btnIndex.setText("Indexando...");
+        Thread t = new Thread(new Runnable() {
+
+            @Override
+            public void run() {
+                finde = new ExtensionFinder();
+                ArrayList<String> directories = finde.readDirectory();
+                for (String dir : directories) {
+                    File f = new File(dir);
+                    try {
+                        directory(f);
+                    } catch (IOException ex) {
+                        Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+                generateMigrationData();
+                mainView.btnIndex.setText("Indexar");
+            }
+        });
+        t.start();
+        
 
     }
 
@@ -257,7 +271,7 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
 
                     } else if (s[i].isFile()) {
                         if (finde.isImage(s[i])) {
-                            output.append(s[i].getName()).append("\n");
+                            output.append("Image: ").append(s[i].getName()).append("\n");
                             int imageid = 0;
                             Image image = new Image(finde.returnName(s[i]), s[i].length(), finde.returnExt(s[i]), 0, 0);
                             Path path = new Path(finde.returnPath(s[i]), 0);
@@ -277,7 +291,7 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
                                 LabelDAO labelDAO = new LabelDAO();
 
                                 for (Directory d : listDir) {
-                                    output.append(d).append("\n");
+                                    output.append(d.getName()).append("\n");
                                     model.Directory md = new model.Directory(0, d.getName());
                                     tagList = mf.getLabel(d);
                                     for (Tag t : tagList) {
@@ -322,7 +336,9 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
     public void valueChanged(ListSelectionEvent e) {
         if (mainView.jTableImage.getSelectedRow() > -1) {
             generateMetadataGUI((int) mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 0));
-            mainView.etImageName.setText((String) mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 1));
+            mainView.etImageName.setText(
+                    (String) mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 1)+"."+
+                            (String) mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 3));
             mainView.pack();
         }
     }
