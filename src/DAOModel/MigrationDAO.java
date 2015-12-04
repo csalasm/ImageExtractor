@@ -17,7 +17,7 @@ import model.MigrationDirectory;
 import model.Value_Label;
 
 /**
- *
+ * Clase que utilizamos para la Migracion de datos entre OracleBD y MongoDB
  * @author andresbailen93
  */
 public class MigrationDAO {
@@ -34,7 +34,11 @@ public class MigrationDAO {
 
         con = ConexionOrcl.connect();
     }
-
+/**
+ * Funcion que recorre la base de datos relacional y extrae la informacion 
+ * @return ArrayList de objetos Migration con la informacion de la base de datos
+ * @throws SQLException 
+ */
     public ArrayList<Migration> migrate() throws SQLException {
         Migration migration = null;
         ArrayList<Value_Label> vl_list = new ArrayList<>();

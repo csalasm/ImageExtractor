@@ -23,14 +23,14 @@ import model.MigrationDirectory;
 import model.Value_Label;
  
 /**
->  *
->  * @author Jesus Munoz
->  */
+  *This class made the connection with MongoBD and create a new collection with image's information
+  * @author Jesus Munoz
+  */
  public class ConexionMongoDB {
  
      /**
->      * @param args the command line arguments
->      */
+      * @param args the command line arguments
+      */
      private MongoClient mongoClient = null;
      private MongoDatabase db = null;
      private ArrayList<Migration> data = null;
@@ -38,18 +38,27 @@ import model.Value_Label;
      private ArrayList<Migration> rMigrationList = new ArrayList();
      private ArrayList<MigrationDirectory> rMigrationDirectoryList = new ArrayList();
  
- 
+ /**
+  *  Class ConexionMongoDB' constructor
+  * @param dbName Database name
+  */
      public ConexionMongoDB(String dbName) {
          this.mongoClient = new MongoClient();
          this.db = mongoClient.getDatabase(dbName);
          this.data = data;
          this.dbName = dbName;
      }
-     
+     /**
+      * Function return ArrayList of Migration's object
+      * @param data 
+      */
      public void setMigrationData(ArrayList<Migration>data) {
          this.data = data;
      }
- 
+     /**
+      * 
+      * @param collName 
+      */
      public void listAllfromCollect(String collName) {
  
          FindIterable<org.bson.Document> iterable = this.db.getCollection(collName).find(); //Buscamos el documento con id: Asus

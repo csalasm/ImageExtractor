@@ -12,7 +12,11 @@ package model;
 public class Value_Label {
     private String value;
     private String label;
-
+/**
+ * Constructor de la clae Value_Label 
+ * @param value String con el valor de una determinada etiqueta a una imagen
+ * @param label String con el nombre de una etiqueta de una imagen
+ */
     public Value_Label(String value, String label) {
         this.value = value;
         this.label = label;

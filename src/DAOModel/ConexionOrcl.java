@@ -71,9 +71,6 @@ public class ConexionOrcl {
 
     /**
      * Funcion que desconecta la conexion con la base de datos.
-     *
-     * @param descon Como parametro tiene un objeto de la clase Connection para
-     * que cierre la conexion de ese objeto.
      */
 
     public static void desconecta() {
@@ -85,7 +82,10 @@ public class ConexionOrcl {
         }
 
     }
-    
+    /**
+     * Funcion que cierra la conexion si algun objeto que use esta clase se cierra
+     * @throws Throwable 
+     */
     @Override
     protected void finalize() throws Throwable {
         super.finalize();

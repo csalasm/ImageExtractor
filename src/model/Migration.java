@@ -18,6 +18,15 @@ public class Migration {
     private String extension;
     private String path;
     private ArrayList<MigrationDirectory> directoryName;
+    /**
+     * Constructor de la clase Migration
+     * @param id int identificador de la imagen
+     * @param name String nombre de la imagen
+     * @param size String tamaño de la imagen
+     * @param extension String extension de la imagen
+     * @param path String ruta de la imagen
+     * @param directoryName ArrayList de directorios de la imagen
+     */
 
     public Migration(int id, String name, int size, String extension, String path, ArrayList<MigrationDirectory> directoryName) {
         this.id = id;

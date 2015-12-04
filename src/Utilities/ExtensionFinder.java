@@ -24,7 +24,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 
 /**
- *
+ * Clase con metodos para la obtencion de informacion de una imagen
  * @author andresbailen93
  */
 public class ExtensionFinder {
@@ -41,7 +41,10 @@ public class ExtensionFinder {
     public void setDirectory(String directory) {
         this.directory = directory;
     }
-
+/**
+ * Metodo que recorre el archivo de configuracion y lee las posibles rutas configuradas en el archivo
+ * @return ArrayList con los directorios existentes en el archivo de configuracion
+ */
     public ArrayList<String> readDirectory() {
         Properties pr1 = new Properties();
         FileInputStream route = null;
@@ -67,23 +70,23 @@ public class ExtensionFinder {
         
     }
 
-
+/**
+ * Funcion que devuelve si un fichero es una imagen
+ * @param f Objeto de la clase File
+ * @return boolean que devuelve true si es una imagen, false en caso contrario
+ * @throws IOException 
+ */
     public boolean isImage(File f) throws IOException{
-        
-            /* String mimetype = new MimetypesFileTypeMap().getContentType(f);
-            String type=mimetype.split("/")[0];
-            System.out.println(type);
-            System.out.println(f.getName());
-            if(type.equals("image")){
-            return true;
-            }
-            return false;*/
             BufferedImage Image = ImageIO.read(f);
         return Image != null;
             
 
     }
-    
+    /**
+     * Metodo que devuelve la extension de un fichero
+     * @param f Objeto de la clase File
+     * @return String con la extension de un fichero
+     */
     public String returnExt(File f){
         String extension = null;
         String name=f.getName();
@@ -93,6 +96,11 @@ public class ExtensionFinder {
         }
         return extension.toLowerCase();
     }
+    /**
+     * Metodo que devuelve el nombre de un fichero
+     * @param f Objeto de la clase File
+     * @return String con el nombre del fichero
+     */
     public String returnName(File f){
         String name=null;
         name=f.getName();
@@ -100,6 +108,11 @@ public class ExtensionFinder {
         
         return name.substring(0, i);
     }
+    /**
+     * Metodo que devuelve la ruta donde esta el fichero
+     * @param f Objeto de la clase File
+     * @return String con la ruta del fichero
+     */
     public String returnPath(File f){
         String path=null;
         path=f.toString();
