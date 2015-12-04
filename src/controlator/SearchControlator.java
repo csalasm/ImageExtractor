@@ -41,6 +41,7 @@ import model.Path;
 import model.Value_Label;
 import view.MainView;
 
+
 /**
  *
  * @author andresbailen93
@@ -52,9 +53,6 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
     ConexionMongoDB mongoDB = null;
     private ArrayList<MigrationDirectory> listDirectories;
 
-    /**
-     * Constructor de la clase SearchControlator
-     */
     public SearchControlator() {
       mainView = new MainView();
       mainView.btnIndex.setActionCommand("BTN_INDEX");
@@ -106,11 +104,11 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
       mainView.pack();
       mainView.setVisible(true);
     }
-
+    
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            switch (e.getActionCommand()) {
+       try { 
+           switch (e.getActionCommand()) {
                 case "BTN_INDEX":
                     startSearching();
                     break;
@@ -120,29 +118,18 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
                 case "DIRECTORY_SELECT":
                     updateMetaDataGUI(null);
                     break;
-
-            }
-        } catch (IOException | MongoWriteException ex) {
-            //ex.printStackTrace();
-        }
+                            
+           }
+       } catch (IOException|MongoWriteException ex) {
+           //ex.printStackTrace();
+       }
     }
-
-    /**
-     * Metodo que inicializa una conexion con la bade de datos MongoDB
-     */
+    
     private void initMongoDB() {
-        if (mongoDB == null) {
+        if (mongoDB == null)
             mongoDB = new ConexionMongoDB("images");
-        }
     }
-
-    /**
-     * Metodo que instancia una objeto de la clase ExtensionFinder y recorre las
-     * rutas del fichero de configuracion, obtiene los ficheros y llama a la
-     * funcion directory
-     *
-     * @throws IOException
-     */
+    
     private void startSearching() throws IOException {
         finde = new ExtensionFinder();
         ArrayList<String> directories = finde.readDirectory();
@@ -151,33 +138,34 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
             directory(f);
         }
         generateMigrationData();
-
+        
     }
-/**
- * Metodo 
- * @param migrationList 
- */
     private void getAllImages(ArrayList<Migration> migrationList) {
         ArrayList<Migration> mList = null;
         // No se reciben datos filtrados por parámetro
         if (migrationList == null) {
             initMongoDB();
             mList = mongoDB.getAllImages();
-        } else {
-            mList = migrationList;
         }
-
-        mainView.model.setRowCount(0);
-        for (Migration m : mList) {
-            Object[] row = {m.getId(), m.getName(), m.getSize(), m.getExtension(), m.getPath()};
-            mainView.model.addRow(row);
+        else
+            mList = migrationList;
+        
+        mainView.modelImage.setRowCount(0);
+        for (Migration m: mList) {
+            Object[] row ={m.getId(),m.getName(),m.getSize(),m.getExtension(),m.getPath()};
+            mainView.modelImage.addRow(row);
         }
         mainView.jTableImage.setEnabled(true);
         mainView.jTableImage.setRowSelectionAllowed(true);
         
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment( JLabel.CENTER );
+        for(int i=0;i<mainView.jTableImage.getColumnCount();i++)
+            mainView.jTableImage.getColumnModel().getColumn(i).setCellRenderer( centerRenderer );
+        
+        
     }
-
+    
     private void generateMigrationData() {
         MigrationDAO migrationDAO = new MigrationDAO();
         ArrayList<Migration> migrationList;
@@ -188,12 +176,14 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
             mongoDB.insertIntoMongoDB();
         } catch (SQLException ex) {
             Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        for (int i = 0; i < mainView.jTableImage.getColumnCount(); i++) {
-            mainView.jTableImage.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
-        }
-
-        generateMetadataGUI();
+        }          
+    }
+    
+    private void generateMetadataGUI(int idImage) {
+        listDirectories = mongoDB.getDirectoriesFromImageID(idImage);
+        mainView.jComboDirectorio.removeAllItems();
+        for (MigrationDirectory md: listDirectories) {
+            mainView.jComboDirectorio.addItem(md.getName());
         }
         
         mainView.modelMetaData.setRowCount(0);
@@ -247,19 +237,6 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
         return null;
     }
 
-    private void generateMetadataGUI() {
-        ArrayList<MigrationDirectory> listDirectories = mongoDB.getDirectoriesFromImageID(6);
-        mainView.jComboDirectorio.removeAllItems();
-        for (MigrationDirectory md : listDirectories) {
-            mainView.jComboDirectorio.addItem(md.getName());
-        }
-    }
-/**
- * Metodo que comprueba que el fichero no es n directorio, y posteriormente que sea una imagen, 
- * instancia un objeto de la clase Image, Path e ImagenDAO
- * @param dir Objeto de la clase File
- * @throws IOException 
- */
     public void directory(File dir) throws IOException {
         StringBuilder output = new StringBuilder();
         if (dir != null) {
@@ -272,15 +249,15 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
                     } else if (s[i].isFile()) {
                         if (finde.isImage(s[i])) {
                             output.append(s[i].getName()).append("\n");
-                            int imageid = 0;
+                            int imageid=0;
                             Image image = new Image(finde.returnName(s[i]), s[i].length(), finde.returnExt(s[i]), 0, 0);
-                            Path path = new Path(finde.returnPath(s[i]), 0);
-                            ImageDAO imagedao = new ImageDAO();
-
+                            Path path= new Path(finde.returnPath(s[i]),0);
+                            ImageDAO imagedao=new ImageDAO();
+                            
                             try {
-                                imageid = imagedao.addImage(image, path);
+                                imageid=imagedao.addImage(image, path);
                                 image.setIdImage(imageid);
-
+                                
                             } catch (SQLException ex) {
                                 Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
                             }
@@ -289,31 +266,32 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
                                 ArrayList<Directory> listDir = mf.getDirectory();
                                 ArrayList<Tag> tagList;
                                 LabelDAO labelDAO = new LabelDAO();
-
-                                for (Directory d : listDir) {
+                                
+                                for(Directory d: listDir) {
                                     output.append(d).append("\n");
                                     model.Directory md = new model.Directory(0, d.getName());
                                     tagList = mf.getLabel(d);
-                                    for (Tag t : tagList) {
+                                    for (Tag t: tagList) {
                                         Label l = new Label(t.getTagName(), 0, 0);
                                         Image_label il = new Image_label(t.getDescription(), 0, 0);
-                                        labelDAO.addMetaData(image, md, l, il);
+                                        labelDAO.addMetaData(image, md, l,il);
                                     }
-
+                                    
                                 }
                                 mainView.jAreaConsole.setText(output.toString());
                             } catch (ImageProcessingException ex) {
                                 Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
-
-                            } catch (SQLException ex) {
+                            
+                            
+                        }   catch (SQLException ex) {
                                 Logger.getLogger(SearchControlator.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        }
-                    } else {
-                        System.out.println("No es un directorio");
                     }
-                }
+            } else {
+                System.out.println("No es un directorio");
             }
+        }
+    }
         }
     }
 
@@ -331,11 +309,22 @@ public class SearchControlator implements ActionListener, KeyListener, ListSelec
     public void keyReleased(KeyEvent e) {
         
 
+        
     }
 
     @Override
     public void valueChanged(ListSelectionEvent e) {
         if (mainView.jTableImage.getSelectedRow() > -1) {
+            generateMetadataGUI((int)mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 0));
+            mainView.etImageName.setText((String)mainView.jTableImage.getValueAt(mainView.jTableImage.getSelectedRow(), 1));
+            mainView.pack();
+        }
+    }
+
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        if (e.getStateChange() == ItemEvent.SELECTED) {
+            updateMetaDataGUI(null);
         }
     }
 }
