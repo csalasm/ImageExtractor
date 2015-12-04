@@ -26,16 +26,27 @@ public class MainView extends javax.swing.JFrame {
         initComponents();
         this.setSize(640, 480);
         this.setTitle("ImageExtractor");
+        
         manageImageTable();
     }
     
     private void manageImageTable() {
         Object columns[] = {"ID", "NOMBRE", "TAMAÑO", "EXTENSIÓN", "RUTA"};
-        modelImage = new DefaultTableModel(columns, 0);
+        modelImage = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         jTableImage.setModel(modelImage);
         
         Object columnsMetaData[] = {"ETIQUETA", "VALOR"};
-        modelMetaData = new DefaultTableModel(columnsMetaData, 0);
+        modelMetaData = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         jTableLabels.setModel(modelMetaData);
         
     }
