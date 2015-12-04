@@ -41,7 +41,7 @@ public class MainView extends javax.swing.JFrame {
         jTableImage.setModel(modelImage);
         
         Object columnsMetaData[] = {"ETIQUETA", "VALOR"};
-        modelMetaData = new DefaultTableModel(columns, 0) {
+        modelMetaData = new DefaultTableModel(columnsMetaData, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
